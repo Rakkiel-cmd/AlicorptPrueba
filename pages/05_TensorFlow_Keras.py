@@ -7,7 +7,7 @@ from tensorflow import keras
 
 st.set_page_config(page_title="TensorFlow y Keras", layout="wide")
 
-st.title("🧩 Integrante 5: TensorFlow y Keras")
+st.title("TensorFlow y Keras")
 st.write("Redes Neuronales y Deep Learning para predicción de Churn (abandono de clientes).")
 
 # --- TENSORFLOW ---
