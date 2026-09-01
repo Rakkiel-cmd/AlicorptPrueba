@@ -49,7 +49,7 @@ xmin, xmax = plt.xlim()
 x = np.linspace(xmin, xmax, 100)
 p = norm.pdf(x, mu, std_simulada)
 
-ax_sci.plot(x, p, 'k', linewidth=2, label=f'Curva Ajustada ($\sigma={std_simulada:.1f}$)')
+ax_sci.plot(x, p, 'k', linewidth=2, label=rf'Curva Ajustada ($\sigma={std_simulada:.1f}$)')
 ax_sci.legend()
 ax_sci.set_xlabel("Días de Entrega")
 st.pyplot(fig_sci)

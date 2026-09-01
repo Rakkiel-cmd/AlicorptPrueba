@@ -40,6 +40,6 @@ st.write("Explora la distribución de una variable usando un gráfico de cajas."
 variable_y = st.radio("Selecciona la variable a analizar (Eje Y):", ["Ganancias_Soles", "Ventas_Soles", "Costos_Soles"], horizontal=True)
 
 fig_sns, ax_sns = plt.subplots(figsize=(8, 4))
-sns.boxplot(data=df_alicorp, x="Marca", y=variable_y, palette="Set2", ax=ax_sns)
+sns.boxplot(data=df_alicorp, x="Marca", y=variable_y, hue="Marca", palette="Set2", legend=False, ax=ax_sns)
 ax_sns.set_title(f"Distribución de {variable_y} por Marca")
 st.pyplot(fig_sns)

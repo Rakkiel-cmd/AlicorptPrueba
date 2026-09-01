@@ -23,7 +23,7 @@ else:
     df_filtrado = df_alicorp[df_alicorp["Categoria"] == categoria_seleccionada]
 
 resumen_pandas = df_filtrado.groupby("Marca")["Ventas_Soles"].sum().reset_index().sort_values(by="Ventas_Soles", ascending=False)
-st.dataframe(resumen_pandas.style.highlight_max(subset=["Ventas_Soles"], color="lightgreen"), use_container_width=True)
+st.dataframe(resumen_pandas.style.highlight_max(subset=["Ventas_Soles"], color="lightgreen"), width="stretch")
 
 st.markdown("---")
 
