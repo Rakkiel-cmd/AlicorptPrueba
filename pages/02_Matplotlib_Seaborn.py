@@ -5,7 +5,7 @@ from data_gen import generar_datos_alicorp
 
 st.set_page_config(page_title="Matplotlib y Seaborn", layout="wide")
 
-st.title("🧩 Integrante 2: Matplotlib y Seaborn")
+st.title("Matplotlib y Seaborn")
 st.write("Visualización de tendencias y análisis de distribuciones.")
 
 df_alicorp = generar_datos_alicorp()

@@ -5,11 +5,11 @@ import torch
 
 st.set_page_config(page_title="PyTorch", layout="wide")
 
-st.title("🧩 Integrante 6: PyTorch")
+st.title("PyTorch")
 st.write("Procesamiento avanzado de tensores para arquitecturas de Machine Learning.")
 
 # --- PYTORCH ---
-st.header("10. PyTorch: Tensor Heatmap de Correlaciones (Interactivo)")
+st.header("Tensor Heatmap de Correlaciones (Interactivo)")
 st.write("Ajusta el tamaño (dimensión NxN) del tensor de características. PyTorch recalculará la matriz de correlación simulada en tiempo real.")
 
 dimension_tensor = st.slider("Dimensión del Tensor (Características):", min_value=3, max_value=12, value=5)

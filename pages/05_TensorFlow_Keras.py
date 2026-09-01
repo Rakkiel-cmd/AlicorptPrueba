@@ -11,7 +11,7 @@ st.title("🧩 Integrante 5: TensorFlow y Keras")
 st.write("Redes Neuronales y Deep Learning para predicción de Churn (abandono de clientes).")
 
 # --- TENSORFLOW ---
-st.header("8. TensorFlow: Historial de Entrenamiento (Interactivo)")
+st.header("Historial de Entrenamiento (Interactivo)")
 st.write("Modifica la tasa de aprendizaje simulada para ver cómo afecta la convergencia (Loss) del modelo.")
 
 tasa_aprendizaje = st.slider("Tasa de Aprendizaje (Simulada):", min_value=1.0, max_value=10.0, value=5.0, step=1.0)

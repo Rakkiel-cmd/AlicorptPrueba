@@ -10,7 +10,7 @@ from data_gen import generar_datos_alicorp
 
 st.set_page_config(page_title="Scikit-Learn y SciPy", layout="wide")
 
-st.title("🧩 Integrante 3: Scikit-learn y SciPy")
+st.title("Scikit-learn y SciPy")
 st.write("Modelos de Machine Learning Tradicional y Distribuciones Estadísticas.")
 
 df_alicorp = generar_datos_alicorp()

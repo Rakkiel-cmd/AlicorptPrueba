@@ -6,7 +6,7 @@ from data_gen import generar_datos_alicorp
 
 st.set_page_config(page_title="Pandas y NumPy", layout="wide")
 
-st.title("🧩 Integrante 1: Pandas y NumPy")
+st.title("Pandas y NumPy")
 st.write("Análisis y limpieza de datos, y transformaciones matemáticas.")
 
 df_alicorp = generar_datos_alicorp()

@@ -12,7 +12,7 @@ except LookupError:
 
 st.set_page_config(page_title="NLTK y WordCloud", layout="wide")
 
-st.title("🧩 Integrante 4: NLTK y Análisis de Sentimiento")
+st.title("NLTK y Análisis de Sentimiento")
 st.write("Procesamiento de Lenguaje Natural sobre las reseñas de clientes.")
 
 df_alicorp = generar_datos_alicorp()
