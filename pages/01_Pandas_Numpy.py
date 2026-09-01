@@ -1,4 +1,6 @@
+# pyrefly: ignore [missing-import]
 import streamlit as st
+# pyrefly: ignore [missing-import]
 import numpy as np
 from data_gen import generar_datos_alicorp
 
