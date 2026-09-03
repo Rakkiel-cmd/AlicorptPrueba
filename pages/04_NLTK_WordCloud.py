@@ -5,11 +5,7 @@ import nltk
 from nltk.sentiment import SentimentIntensityAnalyzer
 from data_gen import generar_datos_alicorp
 
-# Descargar recursos NLTK si es necesario
-try:
-    nltk.data.find('sentiment/vader_lexicon.zip')
-except LookupError:
-    nltk.download('vader_lexicon')
+# El lexicon se descargará previamente en el entorno de despliegue
 
 st.set_page_config(page_title="NLTK y WordCloud", layout="wide")
 

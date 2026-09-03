@@ -27,14 +27,29 @@ col1, col2, col3, col4 = st.columns(4)
 ventas_totales = df_alicorp["Ventas_Soles"].sum()
 ganancias_totales = df_alicorp["Ganancias_Soles"].sum()
 promedio_entrega = df_alicorp["Tiempo_Entrega_Dias"].mean()
-# Promedio y mediana de venta por pedido (antes solo se mostraba el total)
 promedio_venta = df_alicorp["Ventas_Soles"].mean()
 mediana_venta = df_alicorp["Ventas_Soles"].median()
 
-col1.metric("Ventas Totales (Simuladas)", f"S/ {ventas_totales:,.2f}", "+5.2% vs mes anterior")
-col2.metric("Ganancias Netas (Simuladas)", f"S/ {ganancias_totales:,.2f}", "+2.1% vs mes anterior")
+# Cálculos reales de deltas vs mes anterior
+mes_max = df_alicorp["Fecha"].dt.to_period("M").max()
+mes_ant = mes_max - 1
+
+df_mes_max = df_alicorp[df_alicorp["Fecha"].dt.to_period("M") == mes_max]
+df_mes_ant = df_alicorp[df_alicorp["Fecha"].dt.to_period("M") == mes_ant]
+
+# Evitar división por cero
+ventas_ant = df_mes_ant["Ventas_Soles"].sum() if not df_mes_ant.empty else 1
+ganancias_ant = df_mes_ant["Ganancias_Soles"].sum() if not df_mes_ant.empty else 1
+entrega_ant = df_mes_ant["Tiempo_Entrega_Dias"].mean() if not df_mes_ant.empty else promedio_entrega
+
+delta_ventas = ((df_mes_max["Ventas_Soles"].sum() - ventas_ant) / ventas_ant) * 100
+delta_ganancias = ((df_mes_max["Ganancias_Soles"].sum() - ganancias_ant) / ganancias_ant) * 100
+delta_entrega = df_mes_max["Tiempo_Entrega_Dias"].mean() - entrega_ant
+
+col1.metric("Ventas Totales (Simuladas)", f"S/ {ventas_totales:,.2f}", f"{delta_ventas:+.1f}% vs mes anterior")
+col2.metric("Ganancias Netas (Simuladas)", f"S/ {ganancias_totales:,.2f}", f"{delta_ganancias:+.1f}% vs mes anterior")
 col3.metric("Venta Promedio / Mediana", f"S/ {promedio_venta:,.0f} / S/ {mediana_venta:,.0f}")
-col4.metric("Tiempo Entrega Promedio", f"{promedio_entrega:.1f} días", "-0.5 días vs mes anterior", delta_color="inverse")
+col4.metric("Tiempo Entrega Promedio", f"{promedio_entrega:.1f} días", f"{delta_entrega:+.1f} días vs mes anterior", delta_color="inverse")
 
 # Serie de Tiempo (Ventas a lo largo del tiempo)
 st.subheader("Evolución de Ventas a lo Largo del Tiempo")

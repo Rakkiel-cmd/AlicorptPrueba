@@ -64,7 +64,10 @@ def generar_datos_alicorp(n_registros=1000):
     
     df = pd.DataFrame(data)
     
-    # Guardar localmente como CSV para acceso rápido / evidencia de "consumo de CSV"
-    df.to_csv("alicorp_simulated_data.csv", index=False)
-    
     return df
+
+if __name__ == "__main__":
+    df = generar_datos_alicorp()
+    # Guardar localmente como CSV para acceso rápido (solo si se ejecuta directamente)
+    df.to_csv("alicorp_simulated_data.csv", index=False)
+    print("Datos generados y guardados en alicorp_simulated_data.csv")
