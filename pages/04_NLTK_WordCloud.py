@@ -5,7 +5,15 @@ import nltk
 from nltk.sentiment import SentimentIntensityAnalyzer
 from data_gen import generar_datos_alicorp
 
-# El lexicon se descargará previamente en el entorno de despliegue
+# Descargar NLTK solo la primera vez que arranca el servidor (cacheado)
+@st.cache_resource
+def setup_nltk():
+    try:
+        nltk.data.find('sentiment/vader_lexicon.zip')
+    except LookupError:
+        nltk.download('vader_lexicon')
+
+setup_nltk()
 
 st.set_page_config(page_title="NLTK y WordCloud", layout="wide")
 
