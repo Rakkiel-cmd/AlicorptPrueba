@@ -48,3 +48,11 @@ ax.set_xlabel("Fecha")
 ax.set_ylabel("Ventas Totales")
 st.pyplot(fig)
 plt.close(fig)  # evita acumular figuras en memoria cada vez que Streamlit vuelve a correr el script
+
+# --- TABLA DE DATOS ---
+st.markdown("---")
+st.subheader("🗃️ Base de Datos General (Alicorp)")
+st.write("Explora todos los registros de clientes, ventas y logística recopilados. Puedes ordenar las columnas haciendo clic en sus encabezados y usar la barra lateral de la tabla para desplazarte.")
+
+# Mostrar el DataFrame completo con estilo interactivo
+st.dataframe(df_alicorp)

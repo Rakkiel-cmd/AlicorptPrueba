@@ -40,7 +40,8 @@ num_neuronas = st.number_input("Número de Neuronas (Capa Oculta 1):", min_value
 st.code(
     f'''# Arquitectura del Modelo Secuencial
 modelo = keras.Sequential([
-    keras.layers.Dense({num_neuronas}, activation='relu', input_shape=(10,)),
+    keras.layers.Input(shape=(10,)),
+    keras.layers.Dense({num_neuronas}, activation='relu'),
     keras.layers.Dense(32, activation='relu'),
     keras.layers.Dense(1, activation='sigmoid')
 ])''', language='python'
@@ -48,7 +49,8 @@ modelo = keras.Sequential([
 
 # Construir el modelo real para extraer sus pesos aleatorios
 modelo_keras = keras.Sequential([
-    keras.layers.Dense(num_neuronas, activation='relu', input_shape=(10,)),
+    keras.layers.Input(shape=(10,)),
+    keras.layers.Dense(num_neuronas, activation='relu'),
     keras.layers.Dense(32, activation='relu'),
     keras.layers.Dense(1, activation='sigmoid')
 ])
