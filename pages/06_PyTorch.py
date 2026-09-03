@@ -13,7 +13,9 @@ st.write("Entrenamiento de un modelo real de Regresión Lineal usando tensores y
 
 # PYTORCH
 st.header("PyTorch: Predicción de Ganancias")
-st.write("Este módulo entrena un modelo lineal de PyTorch (y = Wx + b) para predecir las ganancias en función de las ventas, ajustando los pesos a lo largo de varias épocas.")
+st.write("Este módulo entrena un modelo lineal de PyTorch para predecir las ganancias en función de las ventas, ajustando los pesos a lo largo de varias épocas para minimizar el Error Cuadrático Medio (MSE).")
+st.latex(r"\hat{y} = Wx + b")
+st.latex(r"MSE = \frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2")
 
 df = generar_datos_alicorp()
 # Datos de entrada (Ventas) y salida (Ganancias)

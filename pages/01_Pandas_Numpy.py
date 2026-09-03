@@ -14,6 +14,7 @@ df_alicorp = generar_datos_alicorp()
 # PANDAS
 st.header("Pandas")
 st.write("La tabla agrupa las ventas por marca. El filtro permite limitarla a una sola categoría de producto.")
+st.latex(r"\text{Total Marca} = \sum_{i=1}^{n} \text{Venta}_{i}")
 
 # Interactividad: Selectbox para filtrar
 categorias_disponibles = ["Todas"] + list(df_alicorp["Categoria"].unique())
@@ -31,6 +32,7 @@ st.dataframe(resumen_pandas.style.highlight_max(subset=["Ventas_Soles"], color="
 # NUMPY
 st.header("NumPy")
 st.write("Las matrices representan costos y factores logísticos. El multiplicador cambia los valores de la matriz 3x3.")
+st.latex(r"M_{nueva} = M_{base} \times k")
 
 # Interactividad: Slider
 multiplicador = st.slider("Multiplicador Logístico", min_value=1.0, max_value=20.0, value=10.0, step=1.0)

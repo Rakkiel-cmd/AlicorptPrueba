@@ -22,6 +22,7 @@ st.caption("Los datos son simulados por el código, no corresponden a ventas rea
 
 # KPIs
 st.subheader("Indicadores Clave de Rendimiento (KPIs)")
+st.latex(r"\Delta \% = \left( \frac{\text{Valor}_{actual} - \text{Valor}_{anterior}}{\text{Valor}_{anterior}} \right) \times 100")
 col1, col2, col3, col4 = st.columns(4)
 
 ventas_totales = df_alicorp["Ventas_Soles"].sum()

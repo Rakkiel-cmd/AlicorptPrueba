@@ -33,7 +33,8 @@ plt.close(fig_tf)
 
 # KERAS
 st.header("Keras")
-st.write("Este bloque arma la arquitectura de la red y muestra los pesos iniciales de la capa oculta según el número de neuronas elegido.")
+st.write("Este bloque arma la arquitectura de la red. Cada neurona oculta calcula una suma ponderada de sus entradas, sumando un sesgo (bias) y aplicando una función de activación.")
+st.latex(r"a^{(l)} = g(W^{(l)}a^{(l-1)} + b^{(l)})")
 
 num_neuronas = st.number_input("Número de Neuronas (Capa Oculta 1):", min_value=8, max_value=128, value=64, step=8)
 

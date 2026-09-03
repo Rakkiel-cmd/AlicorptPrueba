@@ -24,7 +24,8 @@ df_alicorp = generar_datos_alicorp()
 
 # NLTK
 st.header("NLTK")
-st.write("Cada reseña se clasifica como positiva, negativa o neutra según su contenido.")
+st.write("Cada reseña se clasifica como positiva, negativa o neutra según su contenido. La puntuación compuesta (Compound Score) normaliza el sentimiento entre -1 y +1.")
+st.latex(r"Compound = \frac{\sum \text{valencias}}{\sqrt{\sum \text{valencias}^2 + \alpha}}")
 sia = SentimentIntensityAnalyzer()
 df_alicorp["Sentimiento"] = df_alicorp["Reseña_Cliente"].apply(lambda t: sia.polarity_scores(t)["compound"])
 promedio_sentimiento = df_alicorp["Sentimiento"].mean()

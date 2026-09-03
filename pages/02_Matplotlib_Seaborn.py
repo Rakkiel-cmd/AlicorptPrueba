@@ -35,7 +35,8 @@ else:
 
 # SEABORN
 st.header("Seaborn")
-st.write("El gráfico muestra la distribución de la variable elegida y su mediana, agrupada por marca o categoría.")
+st.write("El gráfico de cajas (Boxplot) muestra la distribución, mediana y valores atípicos usando el Rango Intercuartílico (IQR).")
+st.latex(r"IQR = Q_3 - Q_1")
 
 variable_y = st.radio("Selecciona la variable a analizar (Eje Y):", ["Ganancias_Soles", "Ventas_Soles", "Costos_Soles"], horizontal=True)
 # Comparar por marca o por categoría

@@ -18,7 +18,8 @@ df_alicorp = generar_datos_alicorp()
 
 # SCIKIT-LEARN
 st.header("Scikit-learn")
-st.write("El modelo K-Means agrupa a los clientes según su edad y frecuencia de compra. El número de grupos se define con el control siguiente.")
+st.write("El modelo K-Means agrupa a los clientes minimizando la distancia euclidiana entre los puntos y el centro de su grupo.")
+st.latex(r"J = \sum_{j=1}^{K} \sum_{i \in C_j} ||x_i - \mu_j||^2")
 
 num_clusters = st.slider("Número de Clusters (K):", min_value=2, max_value=6, value=3)
 
@@ -41,6 +42,7 @@ plt.close(fig_skl)
 # SCIPY
 st.header("SciPy")
 st.write("El gráfico ajusta una curva normal a los tiempos de entrega. La desviación seleccionada define qué tan ancha se ve la curva.")
+st.latex(r"f(x) = \frac{1}{\sigma\sqrt{2\pi}} e^{-\frac{1}{2}\left(\frac{x-\mu}{\sigma}\right)^2}")
 
 varianza_ajuste = st.slider("Ajuste manual de Desviación (Simulación):", min_value=0.1, max_value=2.0, value=1.0, step=0.1)
 
