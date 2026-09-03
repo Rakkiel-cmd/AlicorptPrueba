@@ -16,9 +16,9 @@ st.sidebar.markdown("Proyecto de Machine Learning - Alicorp")
 
 # DASHBOARD 1: ANÁLISIS COMERCIAL (HOME)
 st.title("Dashboard Alicorp")
-st.write("El panel principal reúne las ventas, las ganancias y el tiempo de entrega del período. Cada librería se desarrolla en una página distinta del menú.")
+st.write("Análisis principal que muestra las ventas, las ganancias y el tiempo de entrega promedio de los productos.")
 
-st.caption("Los datos son generados por el código de forma aleatoria, no corresponden a ventas reales de Alicorp.")
+st.caption("Los datos son simulados por el código, no corresponden a ventas reales de Alicorp.")
 
 # KPIs
 st.subheader("Indicadores Clave de Rendimiento (KPIs)")
@@ -66,8 +66,8 @@ plt.close(fig)  # evita acumular figuras en memoria cada vez que Streamlit vuelv
 
 # --- TABLA DE DATOS ---
 st.markdown("---")
-st.subheader("🗃️ Base de Datos General (Alicorp)")
-st.write("Explora todos los registros de clientes, ventas y logística recopilados. Puedes ordenar las columnas haciendo clic en sus encabezados y usar la barra lateral de la tabla para desplazarte.")
+st.subheader("🗃️ Base de Datos de Ventas de Alicorp")
+st.write("Registros de clientes, ventas y logística recopilados.")
 
 # Mostrar el DataFrame completo con estilo interactivo
 st.dataframe(df_alicorp)
