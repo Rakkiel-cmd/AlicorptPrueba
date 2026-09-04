@@ -16,6 +16,14 @@ st.header("PyTorch: Predicción de Ganancias")
 st.write("Este módulo entrena un modelo lineal de PyTorch para predecir las ganancias en función de las ventas, ajustando los pesos a lo largo de varias épocas para minimizar el Error Cuadrático Medio (MSE).")
 st.latex(r"\hat{y} = Wx + b")
 st.latex(r"MSE = \frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2")
+st.write("Con Momentum, el modelo acumula \"inercia\" de gradientes anteriores para acelerar la convergencia y reducir oscilaciones:")
+st.latex(r"""
+\begin{aligned}
+v_{t} &= \beta v_{t-1} + \alpha \nabla L(\theta) \\
+\theta_{t} &= \theta_{t-1} - v_{t}
+\end{aligned}
+""")
+st.write("Donde $\\beta$ es el **Momentum** y $\\alpha$ es la **Tasa de aprendizaje**.")
 
 df = cargar_datos_csv()
 # Datos de entrada (Ventas) y salida (Ganancias)
