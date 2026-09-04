@@ -2,13 +2,13 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-from data_gen import cargar_o_generar_csv
+from data_gen import cargar_datos_csv
 
 # CONFIGURACIÓN DE PÁGINA
 st.set_page_config(page_title="Alicorp Analytics & ML", layout="wide", page_icon="📈")
 
 # Generar y cargar los datos (Ficticios)
-df_alicorp = cargar_o_generar_csv()
+df_alicorp = cargar_datos_csv()
 
 # MENÚ LATERAL
 st.sidebar.markdown("### Alicorp Analytics")
