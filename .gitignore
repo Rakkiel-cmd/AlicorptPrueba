@@ -8,9 +8,6 @@ __pycache__/
 *.pyc
 *.pyo
 
-# Archivos de datos generados
-*.csv
-
 # Archivos binarios / instaladores
 *.exe
 
