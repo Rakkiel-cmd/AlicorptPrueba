@@ -7,14 +7,14 @@ import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
 from scipy.stats import norm
-from data_gen import generar_datos_alicorp
+from data_gen import cargar_o_generar_csv
 
 st.set_page_config(page_title="Scikit-Learn y SciPy", layout="wide")
 
 st.title("Scikit-learn y SciPy")
 st.write("Scikit-learn agrupa a los clientes con un modelo de Machine Learning, y SciPy analiza la distribución de los tiempos de entrega.")
 
-df_alicorp = generar_datos_alicorp()
+df_alicorp = cargar_o_generar_csv()
 
 # SCIKIT-LEARN
 st.header("Scikit-learn")

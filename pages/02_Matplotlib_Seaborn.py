@@ -1,14 +1,14 @@
 import streamlit as st
 import matplotlib.pyplot as plt
 import seaborn as sns
-from data_gen import generar_datos_alicorp
+from data_gen import cargar_o_generar_csv
 
 st.set_page_config(page_title="Matplotlib y Seaborn", layout="wide")
 
 st.title("Matplotlib y Seaborn")
 st.write("Matplotlib arma los gráficos de tendencia y Seaborn analiza cómo se distribuyen los datos.")
 
-df_alicorp = generar_datos_alicorp()
+df_alicorp = cargar_o_generar_csv()
 
 # MATPLOTLIB
 st.header("Matplotlib")

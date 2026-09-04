@@ -4,7 +4,7 @@ import torch.nn as nn
 import torch.optim as optim
 import matplotlib.pyplot as plt
 import numpy as np
-from data_gen import generar_datos_alicorp
+from data_gen import cargar_o_generar_csv
 
 st.set_page_config(page_title="PyTorch", layout="wide")
 
@@ -17,7 +17,7 @@ st.write("Este módulo entrena un modelo lineal de PyTorch para predecir las gan
 st.latex(r"\hat{y} = Wx + b")
 st.latex(r"MSE = \frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2")
 
-df = generar_datos_alicorp()
+df = cargar_o_generar_csv()
 # Datos de entrada (Ventas) y salida (Ganancias)
 X_np = df["Ventas_Soles"].values.astype(np.float32).reshape(-1, 1)
 y_np = df["Ganancias_Soles"].values.astype(np.float32).reshape(-1, 1)

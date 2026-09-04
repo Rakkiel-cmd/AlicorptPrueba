@@ -4,11 +4,14 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import tensorflow as tf
 from tensorflow import keras
+from data_gen import cargar_o_generar_csv
 
 st.set_page_config(page_title="TensorFlow y Keras", layout="wide")
 
 st.title("TensorFlow y Keras")
-st.write("Ambas librerías se usan para construir y entrenar redes neuronales, en este caso orientadas a predecir el abandono de clientes.")
+st.write("TensorFlow es la base para redes neuronales y Keras facilita su creación.")
+
+df_alicorp = cargar_o_generar_csv()
 
 # TENSORFLOW
 st.header("TensorFlow")

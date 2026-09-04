@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from wordcloud import WordCloud
 import nltk
 from nltk.sentiment import SentimentIntensityAnalyzer
-from data_gen import generar_datos_alicorp
+from data_gen import cargar_o_generar_csv
 
 # Descargar NLTK solo la primera vez que arranca el servidor (cacheado)
 @st.cache_resource
@@ -20,7 +20,7 @@ st.set_page_config(page_title="NLTK y WordCloud", layout="wide")
 st.title("NLTK y WordCloud")
 st.write("NLTK analiza el sentimiento de las reseñas y WordCloud arma una nube con las palabras más usadas.")
 
-df_alicorp = generar_datos_alicorp()
+df_alicorp = cargar_o_generar_csv()
 
 # NLTK
 st.header("NLTK")

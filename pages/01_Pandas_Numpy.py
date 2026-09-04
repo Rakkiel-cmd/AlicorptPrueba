@@ -2,14 +2,14 @@
 import streamlit as st
 # pyrefly: ignore [missing-import]
 import numpy as np
-from data_gen import generar_datos_alicorp
+from data_gen import cargar_o_generar_csv
 
 st.set_page_config(page_title="Pandas y NumPy", layout="wide")
 
 st.title("Pandas y NumPy")
 st.write("Pandas se usa para organizar y filtrar los datos, y NumPy para trabajar con matrices numéricas.")
 
-df_alicorp = generar_datos_alicorp()
+df_alicorp = cargar_o_generar_csv()
 
 # PANDAS
 st.header("Pandas")

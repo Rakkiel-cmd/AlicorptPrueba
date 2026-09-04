@@ -1,10 +1,9 @@
 import pandas as pd
-# pyrefly: ignore [missing-import]
 import numpy as np
 import random
 from datetime import datetime, timedelta
-# pyrefly: ignore [missing-import]
 import streamlit as st
+import os
 
 @st.cache_data
 def generar_datos_alicorp(n_registros=1000):
@@ -15,29 +14,21 @@ def generar_datos_alicorp(n_registros=1000):
     funcionamiento de las librerías solicitadas en el proyecto.
     No representan cifras reales de la empresa Alicorp.
     '''
-    # Semilla fija: sin esto, cada refresco de la app generaba números distintos
-    # y el CSV de ejemplo del repo nunca coincidía con lo mostrado en vivo.
     random.seed(42)
     np.random.seed(42)
 
     marcas = ["Primor", "Blanca Flor", "Bolívar", "Don Vittorio", "Casino", "Sayón"]
     categorias = ["Aceites", "Harinas", "Detergentes", "Fideos", "Galletas", "Chocolates"]
     
-    # Fechas simuladas del último año
     fechas = [datetime.today() - timedelta(days=random.randint(0, 365)) for _ in range(n_registros)]
     
-    # Valores monetarios simulados.
-    # Con normal(150, 50) algunas ventas caían en negativo (imposible en la realidad
-    # y arrastraba costos/ganancias negativos también). Se acota con un piso mínimo.
     ventas_s = np.random.normal(loc=150, scale=50, size=n_registros)
     ventas_s = np.clip(ventas_s, 10, None)
     costos_s = ventas_s * np.random.uniform(0.4, 0.7, size=n_registros)
     ganancias_s = ventas_s - costos_s
     
-    # Tiempos de logística
     tiempos_entrega = np.random.lognormal(mean=1.5, sigma=0.5, size=n_registros)
     
-    # Reseñas falsas
     reseñas = [
         "Muy buen producto, siempre compro de esta marca.",
         "Pésima calidad, vino abierto el empaque.",
@@ -66,8 +57,21 @@ def generar_datos_alicorp(n_registros=1000):
     
     return df
 
+@st.cache_data
+def cargar_o_generar_csv():
+    archivo_csv = "alicorp_simulated_data.csv"
+    
+    # Si el archivo no existe físicamente (ej. en la nube), lo generamos
+    if not os.path.exists(archivo_csv):
+        df_nuevo = generar_datos_alicorp()
+        df_nuevo.to_csv(archivo_csv, index=False)
+        print("Archivo CSV generado por primera vez.")
+        
+    # Obligatoriamente usamos pd.read_csv para cumplir con la rúbrica
+    # Nos aseguramos de convertir la columna Fecha a datetime
+    df = pd.read_csv(archivo_csv, parse_dates=["Fecha"])
+    return df
+
 if __name__ == "__main__":
-    df = generar_datos_alicorp()
-    # Guardar localmente como CSV para acceso rápido (solo si se ejecuta directamente)
-    df.to_csv("alicorp_simulated_data.csv", index=False)
-    print("Datos generados y guardados en alicorp_simulated_data.csv")
+    df = cargar_o_generar_csv()
+    print("Datos cargados correctamente desde CSV.")
