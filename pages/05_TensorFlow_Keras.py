@@ -66,3 +66,61 @@ sns.heatmap(pesos.T, cmap="YlGnBu", cbar=False, ax=ax_keras)
 ax_keras.set_title(f"Heatmap de Pesos Iniciales (Capa Densa 1 con {num_neuronas} neuronas)")
 st.pyplot(fig_keras)
 plt.close(fig_keras)
+
+# --- TRAYECTORIA DE OPTIMIZACIÓN Y SUPERFICIE DE PÉRDIDA ---
+st.subheader("Superficie de Pérdida y Trayectoria de Entrenamiento (Keras)")
+st.write("Entrenamos una pequeña red neuronal (1 neurona, 2 entradas) para predecir si una venta es mayor al promedio. El gráfico muestra cómo desciende el error (loss) a través del espacio de pesos $W_1$ y $W_2$ durante el entrenamiento por gradiente descendente.")
+
+# Preparar datos (Normalizados)
+X_keras = df_alicorp[["Edad_Cliente", "Frecuencia_Compra_Mensual"]].astype(float).values
+X_keras = (X_keras - X_keras.mean(axis=0)) / X_keras.std(axis=0)
+y_keras = (df_alicorp["Ventas_Soles"] > df_alicorp["Ventas_Soles"].median()).astype(int).values
+
+# Modelo Keras
+modelo_simple = keras.Sequential([
+    keras.layers.Dense(1, use_bias=False, activation='sigmoid', input_shape=(2,))
+])
+modelo_simple.compile(optimizer=keras.optimizers.SGD(learning_rate=0.5), loss='binary_crossentropy')
+
+# Callback para guardar los pesos en cada época
+pesos_historia = []
+class GuardaPesos(keras.callbacks.Callback):
+    def on_epoch_end(self, epoch, logs=None):
+        pesos_historia.append(self.model.layers[0].get_weights()[0].flatten())
+
+# Iniciar entrenamiento desde un punto aleatorio predefinido para consistencia visual
+modelo_simple.layers[0].set_weights([np.array([[-2.0], [2.0]])])
+modelo_simple.fit(X_keras, y_keras, epochs=15, verbose=0, callbacks=[GuardaPesos()])
+pesos_historia = np.array(pesos_historia)
+
+# Calcular superficie de pérdida
+w1_rango = np.linspace(-3.0, 3.0, 30)
+w2_rango = np.linspace(-3.0, 3.0, 30)
+W1, W2 = np.meshgrid(w1_rango, w2_rango)
+
+def loss_grid(w1, w2, X, y):
+    Z = w1 * X[:,0] + w2 * X[:,1]
+    A = 1 / (1 + np.exp(-Z))
+    A = np.clip(A, 1e-7, 1 - 1e-7)
+    return -np.mean(y * np.log(A) + (1 - y) * np.log(1 - A))
+
+Loss = np.zeros_like(W1)
+for i in range(W1.shape[0]):
+    for j in range(W1.shape[1]):
+        Loss[i,j] = loss_grid(W1[i,j], W2[i,j], X_keras, y_keras)
+
+fig_3d = plt.figure(figsize=(10, 6))
+ax_3d = fig_3d.add_subplot(111, projection='3d')
+
+surf = ax_3d.plot_surface(W1, W2, Loss, cmap='viridis', alpha=0.8, edgecolor='none')
+loss_historia_val = [loss_grid(w[0], w[1], X_keras, y_keras) for w in pesos_historia]
+ax_3d.plot(pesos_historia[:, 0], pesos_historia[:, 1], loss_historia_val, color='red', marker='o', linewidth=2, markersize=5, label='Trayectoria SGD')
+
+ax_3d.set_xlabel('Peso $W_1$ (Edad)')
+ax_3d.set_ylabel('Peso $W_2$ (Frecuencia)')
+ax_3d.set_zlabel('Pérdida (Cross-Entropy)')
+ax_3d.set_title('Superficie de Pérdida en Keras')
+ax_3d.legend()
+
+st.pyplot(fig_3d)
+plt.close(fig_3d)
