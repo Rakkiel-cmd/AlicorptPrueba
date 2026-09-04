@@ -39,8 +39,9 @@ modelo = nn.Linear(1, 1)
 criterio = nn.MSELoss()
 tasa_aprendizaje = st.slider("Tasa de aprendizaje (Learning Rate):", min_value=0.01, max_value=0.5, value=0.1, step=0.01)
 epocas = st.slider("Número de Épocas:", min_value=10, max_value=200, value=50, step=10)
+momentum = st.slider("Momentum (Inercia):", min_value=0.0, max_value=0.99, value=0.9, step=0.05)
 
-optimizador = optim.SGD(modelo.parameters(), lr=tasa_aprendizaje)
+optimizador = optim.SGD(modelo.parameters(), lr=tasa_aprendizaje, momentum=momentum)
 
 # Botón para iniciar entrenamiento
 if st.button("Entrenar Modelo"):
