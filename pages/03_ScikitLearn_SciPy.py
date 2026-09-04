@@ -23,8 +23,8 @@ st.write("El modelo Random Forest clasifica la Categoría de producto basándose
 st.latex(r"C_{i,j} = \sum_{k=1}^{N} \mathbb{I}(y_k = i \land \hat{y}_k = j)")
 
 # Preparar datos
-X = df_alicorp[["Edad_Cliente", "Ventas_Soles", "Tiempo_Entrega_Dias"]].values
-y = df_alicorp["Categoria"].values
+X = df_alicorp[["Edad_Cliente", "Ventas_Soles", "Tiempo_Entrega_Dias"]].astype(float)
+y = df_alicorp["Categoria"].astype(str)
 
 # Dividir en entrenamiento y prueba
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
