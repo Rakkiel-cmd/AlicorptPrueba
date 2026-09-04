@@ -78,7 +78,8 @@ y_keras = (df_alicorp["Ventas_Soles"] > df_alicorp["Ventas_Soles"].median()).ast
 
 # Modelo Keras
 modelo_simple = keras.Sequential([
-    keras.layers.Dense(1, use_bias=False, activation='sigmoid', input_shape=(2,))
+    keras.layers.Input(shape=(2,)),
+    keras.layers.Dense(1, use_bias=False, activation='sigmoid')
 ])
 modelo_simple.compile(optimizer=keras.optimizers.SGD(learning_rate=0.5), loss='binary_crossentropy')
 
