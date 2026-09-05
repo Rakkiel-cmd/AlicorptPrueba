@@ -14,6 +14,19 @@ df_alicorp = cargar_datos_csv()
 st.sidebar.markdown("### Alicorp Analytics")
 st.sidebar.markdown("Proyecto de Machine Learning - Alicorp")
 
+# BANNER DE ENCABEZADO
+st.markdown(
+    """
+    <div style="background-color:#E4572E; padding: 18px 24px; border-radius: 10px; margin-bottom: 18px;">
+        <h2 style="color:white; margin:0;">📈 Alicorp Analytics & ML</h2>
+        <p style="color:#FCE9E2; margin:4px 0 0 0; font-size:15px;">
+            Panel interactivo de analítica comercial y Machine Learning — Proyecto SENATI
+        </p>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+
 # DASHBOARD 1: ANÁLISIS COMERCIAL (HOME)
 st.title("Dashboard Alicorp")
 st.write("Análisis principal que muestra las ventas, las ganancias y el tiempo de entrega promedio de los productos.")
