@@ -15,7 +15,42 @@ def setup_nltk():
 
 setup_nltk()
 
-st.set_page_config(page_title="NLTK y WordCloud", layout="wide")
+st.set_page_config(page_title="NLTK y WordCloud", layout="wide", page_icon="☁️")
+
+# TIPOGRAFÍA Y ESTILOS (consistentes con el resto de la app)
+st.markdown(
+    """
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+    html, body, [data-testid="stAppViewContainer"], [data-testid="stSidebar"],
+    [data-testid="stMarkdownContainer"], button, input, textarea {
+        font-family: 'Poppins', sans-serif;
+    }
+    div[data-testid="stVerticalBlockBorderWrapper"] {
+        border-radius: 14px !important;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+st.sidebar.markdown(
+    """
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
+        <div style="background:#E4572E; border-radius:8px; padding:6px; display:flex;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="3" y="12" width="4" height="9" rx="1" fill="white"/>
+                <rect x="10" y="7" width="4" height="14" rx="1" fill="white"/>
+                <rect x="17" y="3" width="4" height="18" rx="1" fill="white"/>
+            </svg>
+        </div>
+        <span style="font-weight:600; font-size:17px;">Alicorp Analytics</span>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+st.sidebar.caption("☁️ Análisis de sentimiento y nube de palabras.")
 
 st.title("NLTK y WordCloud")
 st.write("NLTK analiza el sentimiento de las reseñas y WordCloud arma una nube con las palabras más usadas.")
@@ -58,8 +93,9 @@ with tab_wc:
 
     wordcloud = WordCloud(width=800, height=400, background_color='white').generate(texto_final)
 
-    fig_nltk, ax_nltk = plt.subplots(figsize=(8, 4))
-    ax_nltk.imshow(wordcloud, interpolation='bilinear')
-    ax_nltk.axis('off')
-    st.pyplot(fig_nltk)
-    plt.close(fig_nltk)
+    with st.container(border=True):
+        fig_nltk, ax_nltk = plt.subplots(figsize=(8, 4))
+        ax_nltk.imshow(wordcloud, interpolation='bilinear')
+        ax_nltk.axis('off')
+        st.pyplot(fig_nltk)
+        plt.close(fig_nltk)
