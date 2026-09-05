@@ -72,8 +72,8 @@ if st.button("Entrenar Modelo"):
         barra_progreso.progress((epoca + 1) / epocas)
     
     st.success(f"Entrenamiento completado. Pérdida final: {historial_perdida[-1]:.4f}")
-        st.balloons()
-
+    st.balloons()
+    
     # Graficar
     col1, col2 = st.columns(2)
     
