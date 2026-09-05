@@ -10,7 +10,42 @@ from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 from scipy.stats import norm
 from data_gen import cargar_datos_csv
 
-st.set_page_config(page_title="Scikit-Learn y SciPy", layout="wide")
+st.set_page_config(page_title="Scikit-Learn y SciPy", layout="wide", page_icon="🌳")
+
+# TIPOGRAFÍA Y ESTILOS (consistentes con el resto de la app)
+st.markdown(
+    """
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+    html, body, [data-testid="stAppViewContainer"], [data-testid="stSidebar"],
+    [data-testid="stMarkdownContainer"], button, input, textarea {
+        font-family: 'Poppins', sans-serif;
+    }
+    div[data-testid="stVerticalBlockBorderWrapper"] {
+        border-radius: 14px !important;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+st.sidebar.markdown(
+    """
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
+        <div style="background:#E4572E; border-radius:8px; padding:6px; display:flex;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="3" y="12" width="4" height="9" rx="1" fill="white"/>
+                <rect x="10" y="7" width="4" height="14" rx="1" fill="white"/>
+                <rect x="17" y="3" width="4" height="18" rx="1" fill="white"/>
+            </svg>
+        </div>
+        <span style="font-weight:600; font-size:17px;">Alicorp Analytics</span>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+st.sidebar.caption("🌳 Clasificación con Machine Learning y estadística.")
 
 st.title("Scikit-learn y SciPy")
 st.write("Scikit-learn agrupa a los clientes con un modelo de Machine Learning, y SciPy analiza la distribución de los tiempos de entrega.")
@@ -43,11 +78,12 @@ with tab_skl:
     cm = confusion_matrix(y_test, y_pred, labels=clf.classes_)
     disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=clf.classes_)
 
-    fig_skl, ax_skl = plt.subplots(figsize=(8, 5))
-    disp.plot(ax=ax_skl, cmap="Blues", xticks_rotation=45)
-    ax_skl.set_title("Matriz de Confusión - Clasificación de Categoría")
-    st.pyplot(fig_skl)
-    plt.close(fig_skl)
+    with st.container(border=True):
+        fig_skl, ax_skl = plt.subplots(figsize=(8, 5))
+        disp.plot(ax=ax_skl, cmap="Blues", xticks_rotation=45)
+        ax_skl.set_title("Matriz de Confusión - Clasificación de Categoría")
+        st.pyplot(fig_skl)
+        plt.close(fig_skl)
 
 
 # SCIPY
@@ -62,15 +98,16 @@ with tab_sci:
     mu, std_original = norm.fit(tiempos)
     std_simulada = std_original * varianza_ajuste
 
-    fig_sci, ax_sci = plt.subplots(figsize=(8, 4))
-    ax_sci.hist(tiempos, bins=30, density=True, alpha=0.3, color="skyblue", label="Datos Reales (Simulados)")
+    with st.container(border=True):
+        fig_sci, ax_sci = plt.subplots(figsize=(8, 4))
+        ax_sci.hist(tiempos, bins=30, density=True, alpha=0.3, color="skyblue", label="Datos Reales (Simulados)")
 
-    xmin, xmax = ax_sci.get_xlim()  # antes usaba plt.xlim() sobre estado global; mejor leerlo del propio eje
-    x = np.linspace(xmin, xmax, 100)
-    p = norm.pdf(x, mu, std_simulada)
+        xmin, xmax = ax_sci.get_xlim()  # antes usaba plt.xlim() sobre estado global; mejor leerlo del propio eje
+        x = np.linspace(xmin, xmax, 100)
+        p = norm.pdf(x, mu, std_simulada)
 
-    ax_sci.plot(x, p, 'k', linewidth=2, label=rf'Curva Ajustada ($\sigma={std_simulada:.1f}$)')
-    ax_sci.legend()
-    ax_sci.set_xlabel("Días de Entrega")
-    st.pyplot(fig_sci)
-    plt.close(fig_sci)
+        ax_sci.plot(x, p, 'k', linewidth=2, label=rf'Curva Ajustada ($\sigma={std_simulada:.1f}$)')
+        ax_sci.legend()
+        ax_sci.set_xlabel("Días de Entrega")
+        st.pyplot(fig_sci)
+        plt.close(fig_sci)
