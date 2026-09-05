@@ -10,18 +10,72 @@ st.set_page_config(page_title="Alicorp Analytics & ML", layout="wide", page_icon
 # Generar y cargar los datos (Ficticios)
 df_alicorp = cargar_datos_csv()
 
-# MENÚ LATERAL
-st.sidebar.markdown("### Alicorp Analytics")
-st.sidebar.markdown("Proyecto de Machine Learning - Alicorp")
-
-# BANNER DE ENCABEZADO
+# TIPOGRAFÍA Y ESTILOS GLOBALES (look & feel de página web)
 st.markdown(
     """
-    <div style="background-color:#E4572E; padding: 18px 24px; border-radius: 10px; margin-bottom: 18px;">
-        <h2 style="color:white; margin:0;">📈 Alicorp Analytics & ML</h2>
-        <p style="color:#FCE9E2; margin:4px 0 0 0; font-size:15px;">
-            Panel interactivo de analítica comercial y Machine Learning — Proyecto SENATI
-        </p>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+    html, body, [data-testid="stAppViewContainer"], [data-testid="stSidebar"],
+    [data-testid="stMarkdownContainer"], button, input, textarea {
+        font-family: 'Poppins', sans-serif;
+    }
+    div[data-testid="stMetric"] {
+        background-color: #FFF6F2;
+        border: 1px solid #F0C9BA;
+        border-radius: 12px;
+        padding: 16px 14px 12px 14px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    }
+    div[data-testid="stMetric"] label {
+        color: #E4572E !important;
+    }
+    div[data-testid="stVerticalBlockBorderWrapper"] {
+        border-radius: 14px !important;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# LOGO ORIGINAL (ícono propio, no el logo real de Alicorp) + MENÚ LATERAL
+st.sidebar.markdown(
+    """
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
+        <div style="background:#E4572E; border-radius:8px; padding:6px; display:flex;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="3" y="12" width="4" height="9" rx="1" fill="white"/>
+                <rect x="10" y="7" width="4" height="14" rx="1" fill="white"/>
+                <rect x="17" y="3" width="4" height="18" rx="1" fill="white"/>
+            </svg>
+        </div>
+        <span style="font-weight:600; font-size:17px;">Alicorp Analytics</span>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+st.sidebar.markdown("Proyecto de Machine Learning - Alicorp")
+st.sidebar.caption("📊 Dashboard: KPIs y evolución de ventas.")
+
+# BANNER DE ENCABEZADO (con logo original en SVG, no la marca real de Alicorp)
+st.markdown(
+    """
+    <div style="background: linear-gradient(135deg, #E4572E 0%, #C7431F 100%); padding: 22px 28px;
+                border-radius: 14px; margin-bottom: 20px; display:flex; align-items:center; gap:16px;
+                box-shadow: 0 4px 14px rgba(228,87,46,0.25);">
+        <div style="background-color:rgba(255,255,255,0.18); border-radius:10px; padding:10px; display:flex;">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="3" y="12" width="4" height="9" rx="1" fill="white"/>
+                <rect x="10" y="7" width="4" height="14" rx="1" fill="white"/>
+                <rect x="17" y="3" width="4" height="18" rx="1" fill="white"/>
+            </svg>
+        </div>
+        <div>
+            <h2 style="color:white; margin:0; font-weight:600;">Alicorp Analytics &amp; ML</h2>
+            <p style="color:#FCE9E2; margin:4px 0 0 0; font-size:15px;">
+                Panel interactivo de analítica comercial y Machine Learning — Proyecto SENATI
+            </p>
+        </div>
     </div>
     """,
     unsafe_allow_html=True,
@@ -73,13 +127,14 @@ st.subheader("Evolución de Ventas a lo Largo del Tiempo")
 df_series = df_alicorp.groupby(df_alicorp["Fecha"].dt.to_period("M"))["Ventas_Soles"].sum().reset_index()
 df_series["Fecha"] = df_series["Fecha"].dt.to_timestamp()
 
-fig, ax = plt.subplots(figsize=(10, 4))
-sns.lineplot(data=df_series, x="Fecha", y="Ventas_Soles", marker="o", color="blue", ax=ax)
-ax.set_title("Ventas Mensuales Históricas (Soles)")
-ax.set_xlabel("Fecha")
-ax.set_ylabel("Ventas Totales")
-st.pyplot(fig)
-plt.close(fig)  # evita acumular figuras en memoria cada vez que Streamlit vuelve a correr el script
+with st.container(border=True):
+    fig, ax = plt.subplots(figsize=(10, 4))
+    sns.lineplot(data=df_series, x="Fecha", y="Ventas_Soles", marker="o", color="blue", ax=ax)
+    ax.set_title("Ventas Mensuales Históricas (Soles)")
+    ax.set_xlabel("Fecha")
+    ax.set_ylabel("Ventas Totales")
+    st.pyplot(fig)
+    plt.close(fig)  # evita acumular figuras en memoria cada vez que Streamlit vuelve a correr el script
 
 # --- TABLA DE DATOS ---
 st.markdown("---")
@@ -88,3 +143,15 @@ st.write("Registros de clientes, ventas y logística recopilados.")
 
 # Mostrar el DataFrame completo con estilo interactivo
 st.dataframe(df_alicorp)
+
+# --- PIE DE PÁGINA ---
+st.markdown(
+    """
+    <hr style="margin-top:36px; margin-bottom:14px; border:none; border-top:1px solid #F0C9BA;">
+    <div style="text-align:center; color:#8a8a8a; font-size:13px; padding-bottom:8px;">
+        Proyecto SENATI 2026 · Alicorp Analytics &amp; ML<br>
+        Desarrollado por <strong>Rakkiel-cmd</strong>, <strong>LeonardoLatorreH</strong> y <strong>Dayra1903</strong>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
