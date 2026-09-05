@@ -31,26 +31,29 @@ promedio_entrega = df_alicorp["Tiempo_Entrega_Dias"].mean()
 promedio_venta = df_alicorp["Ventas_Soles"].mean()
 mediana_venta = df_alicorp["Ventas_Soles"].median()
 
-# Cálculos reales de deltas vs mes anterior
-mes_max = df_alicorp["Fecha"].dt.to_period("M").max()
-mes_ant = mes_max - 1
+# Cálculos reales de deltas: ventana móvil de 30 días vs los 30 días previos a esos
+# (antes se comparaba mes calendario contra mes calendario, lo cual daba variaciones
+# falsas cuando el "mes actual" tenía muchos menos días de datos que el anterior)
+fecha_max = df_alicorp["Fecha"].max()
+inicio_actual = fecha_max - pd.Timedelta(days=30)
+inicio_anterior = fecha_max - pd.Timedelta(days=60)
 
-df_mes_max = df_alicorp[df_alicorp["Fecha"].dt.to_period("M") == mes_max]
-df_mes_ant = df_alicorp[df_alicorp["Fecha"].dt.to_period("M") == mes_ant]
+df_periodo_actual = df_alicorp[df_alicorp["Fecha"] > inicio_actual]
+df_periodo_anterior = df_alicorp[(df_alicorp["Fecha"] > inicio_anterior) & (df_alicorp["Fecha"] <= inicio_actual)]
 
 # Evitar división por cero
-ventas_ant = df_mes_ant["Ventas_Soles"].sum() if not df_mes_ant.empty else 1
-ganancias_ant = df_mes_ant["Ganancias_Soles"].sum() if not df_mes_ant.empty else 1
-entrega_ant = df_mes_ant["Tiempo_Entrega_Dias"].mean() if not df_mes_ant.empty else promedio_entrega
+ventas_ant = df_periodo_anterior["Ventas_Soles"].sum() if not df_periodo_anterior.empty else 1
+ganancias_ant = df_periodo_anterior["Ganancias_Soles"].sum() if not df_periodo_anterior.empty else 1
+entrega_ant = df_periodo_anterior["Tiempo_Entrega_Dias"].mean() if not df_periodo_anterior.empty else promedio_entrega
 
-delta_ventas = ((df_mes_max["Ventas_Soles"].sum() - ventas_ant) / ventas_ant) * 100
-delta_ganancias = ((df_mes_max["Ganancias_Soles"].sum() - ganancias_ant) / ganancias_ant) * 100
-delta_entrega = df_mes_max["Tiempo_Entrega_Dias"].mean() - entrega_ant
+delta_ventas = ((df_periodo_actual["Ventas_Soles"].sum() - ventas_ant) / ventas_ant) * 100
+delta_ganancias = ((df_periodo_actual["Ganancias_Soles"].sum() - ganancias_ant) / ganancias_ant) * 100
+delta_entrega = df_periodo_actual["Tiempo_Entrega_Dias"].mean() - entrega_ant
 
-col1.metric("Ventas Totales (Simuladas)", f"S/ {ventas_totales:,.2f}", f"{delta_ventas:+.1f}% vs mes anterior")
-col2.metric("Ganancias Netas (Simuladas)", f"S/ {ganancias_totales:,.2f}", f"{delta_ganancias:+.1f}% vs mes anterior")
+col1.metric("Ventas Totales (Simuladas)", f"S/ {ventas_totales:,.2f}", f"{delta_ventas:+.1f}% vs 30 días previos")
+col2.metric("Ganancias Netas (Simuladas)", f"S/ {ganancias_totales:,.2f}", f"{delta_ganancias:+.1f}% vs 30 días previos")
 col3.metric("Venta Promedio / Mediana", f"S/ {promedio_venta:,.0f} / S/ {mediana_venta:,.0f}")
-col4.metric("Tiempo Entrega Promedio", f"{promedio_entrega:.1f} días", f"{delta_entrega:+.1f} días vs mes anterior", delta_color="inverse")
+col4.metric("Tiempo Entrega Promedio", f"{promedio_entrega:.1f} días", f"{delta_entrega:+.1f} días vs 30 días previos", delta_color="inverse")
 
 # Serie de Tiempo (Ventas a lo largo del tiempo)
 st.subheader("Evolución de Ventas a lo Largo del Tiempo")
