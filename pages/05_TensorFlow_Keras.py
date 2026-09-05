@@ -6,7 +6,42 @@ import tensorflow as tf
 from tensorflow import keras
 from data_gen import cargar_datos_csv
 
-st.set_page_config(page_title="TensorFlow y Keras", layout="wide")
+st.set_page_config(page_title="TensorFlow y Keras", layout="wide", page_icon="🧠")
+
+# TIPOGRAFÍA Y ESTILOS (consistentes con el resto de la app)
+st.markdown(
+    """
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+    html, body, [data-testid="stAppViewContainer"], [data-testid="stSidebar"],
+    [data-testid="stMarkdownContainer"], button, input, textarea {
+        font-family: 'Poppins', sans-serif;
+    }
+    div[data-testid="stVerticalBlockBorderWrapper"] {
+        border-radius: 14px !important;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+st.sidebar.markdown(
+    """
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
+        <div style="background:#E4572E; border-radius:8px; padding:6px; display:flex;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="3" y="12" width="4" height="9" rx="1" fill="white"/>
+                <rect x="10" y="7" width="4" height="14" rx="1" fill="white"/>
+                <rect x="17" y="3" width="4" height="18" rx="1" fill="white"/>
+            </svg>
+        </div>
+        <span style="font-weight:600; font-size:17px;">Alicorp Analytics</span>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+st.sidebar.caption("🧠 Arquitectura y entrenamiento de redes neuronales.")
 
 st.title("TensorFlow y Keras")
 st.write("TensorFlow es la base para redes neuronales y Keras facilita su creación.")
@@ -27,14 +62,15 @@ with tab_tf:
     loss = np.exp(-epocas/tasa_aprendizaje) + np.random.normal(0, 0.05, 20)
     val_loss = np.exp(-epocas/(tasa_aprendizaje*0.9)) + np.random.normal(0, 0.08, 20)
 
-    fig_tf, ax_tf = plt.subplots(figsize=(8,4))
-    ax_tf.plot(epocas, loss, label="Pérdida Entrenamiento (Loss)")
-    ax_tf.plot(epocas, val_loss, label="Pérdida Validación (Val Loss)")
-    ax_tf.set_xlabel("Épocas")
-    ax_tf.set_ylabel("Pérdida")
-    ax_tf.legend()
-    st.pyplot(fig_tf)
-    plt.close(fig_tf)
+    with st.container(border=True):
+        fig_tf, ax_tf = plt.subplots(figsize=(8,4))
+        ax_tf.plot(epocas, loss, label="Pérdida Entrenamiento (Loss)")
+        ax_tf.plot(epocas, val_loss, label="Pérdida Validación (Val Loss)")
+        ax_tf.set_xlabel("Épocas")
+        ax_tf.set_ylabel("Pérdida")
+        ax_tf.legend()
+        st.pyplot(fig_tf)
+        plt.close(fig_tf)
 
 
 # KERAS
@@ -65,11 +101,12 @@ modelo = keras.Sequential([
 
     st.write(f"El heatmap siguiente muestra los pesos iniciales de las {num_neuronas} neuronas, antes de cualquier entrenamiento.")
     pesos = modelo_keras.layers[0].get_weights()[0]
-    fig_keras, ax_keras = plt.subplots(figsize=(10,2))
-    sns.heatmap(pesos.T, cmap="YlGnBu", cbar=False, ax=ax_keras)
-    ax_keras.set_title(f"Heatmap de Pesos Iniciales (Capa Densa 1 con {num_neuronas} neuronas)")
-    st.pyplot(fig_keras)
-    plt.close(fig_keras)
+    with st.container(border=True):
+        fig_keras, ax_keras = plt.subplots(figsize=(10,2))
+        sns.heatmap(pesos.T, cmap="YlGnBu", cbar=False, ax=ax_keras)
+        ax_keras.set_title(f"Heatmap de Pesos Iniciales (Capa Densa 1 con {num_neuronas} neuronas)")
+        st.pyplot(fig_keras)
+        plt.close(fig_keras)
 
     # --- TRAYECTORIA DE OPTIMIZACIÓN Y SUPERFICIE DE PÉRDIDA ---
     st.subheader("Superficie de Pérdida y Trayectoria de Entrenamiento (Keras)")
@@ -114,18 +151,19 @@ modelo = keras.Sequential([
         for j in range(W1.shape[1]):
             Loss[i,j] = loss_grid(W1[i,j], W2[i,j], X_keras, y_keras)
 
-    fig_3d = plt.figure(figsize=(10, 6))
-    ax_3d = fig_3d.add_subplot(111, projection='3d')
+    with st.container(border=True):
+        fig_3d = plt.figure(figsize=(10, 6))
+        ax_3d = fig_3d.add_subplot(111, projection='3d')
 
-    surf = ax_3d.plot_surface(W1, W2, Loss, cmap='viridis', alpha=0.8, edgecolor='none')
-    loss_historia_val = [loss_grid(w[0], w[1], X_keras, y_keras) for w in pesos_historia]
-    ax_3d.plot(pesos_historia[:, 0], pesos_historia[:, 1], loss_historia_val, color='red', marker='o', linewidth=2, markersize=5, label='Trayectoria SGD')
+        surf = ax_3d.plot_surface(W1, W2, Loss, cmap='viridis', alpha=0.8, edgecolor='none')
+        loss_historia_val = [loss_grid(w[0], w[1], X_keras, y_keras) for w in pesos_historia]
+        ax_3d.plot(pesos_historia[:, 0], pesos_historia[:, 1], loss_historia_val, color='red', marker='o', linewidth=2, markersize=5, label='Trayectoria SGD')
 
-    ax_3d.set_xlabel('Peso $W_1$ (Edad)')
-    ax_3d.set_ylabel('Peso $W_2$ (Frecuencia)')
-    ax_3d.set_zlabel('Pérdida (Cross-Entropy)')
-    ax_3d.set_title('Superficie de Pérdida en Keras')
-    ax_3d.legend()
+        ax_3d.set_xlabel('Peso $W_1$ (Edad)')
+        ax_3d.set_ylabel('Peso $W_2$ (Frecuencia)')
+        ax_3d.set_zlabel('Pérdida (Cross-Entropy)')
+        ax_3d.set_title('Superficie de Pérdida en Keras')
+        ax_3d.legend()
 
-    st.pyplot(fig_3d)
-    plt.close(fig_3d)
+        st.pyplot(fig_3d)
+        plt.close(fig_3d)
