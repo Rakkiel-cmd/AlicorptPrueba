@@ -1,21 +1,16 @@
+# pyrefly: ignore [missing-import]
 import streamlit as st
+# pyrefly: ignore [missing-import]
+import numpy as np
+# pyrefly: ignore [missing-import]
 import matplotlib.pyplot as plt
-from wordcloud import WordCloud
-import nltk
-from nltk.sentiment import SentimentIntensityAnalyzer
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+from scipy.stats import norm
 from data_gen import cargar_datos_csv
 
-# Descargar NLTK solo la primera vez que arranca el servidor (cacheado)
-@st.cache_resource
-def setup_nltk():
-    try:
-        nltk.data.find('sentiment/vader_lexicon.zip')
-    except LookupError:
-        nltk.download('vader_lexicon')
-
-setup_nltk()
-
-st.set_page_config(page_title="NLTK y WordCloud", layout="wide", page_icon="☁️")
+st.set_page_config(page_title="Scikit-Learn y SciPy", layout="wide", page_icon="🌳")
 
 # TIPOGRAFÍA Y ESTILOS (consistentes con el resto de la app)
 st.markdown(
@@ -50,52 +45,69 @@ st.sidebar.markdown(
     """,
     unsafe_allow_html=True,
 )
-st.sidebar.caption("☁️ Análisis de sentimiento y nube de palabras.")
+st.sidebar.caption("🌳 Clasificación con Machine Learning y estadística.")
 
-st.title("NLTK y WordCloud")
-st.write("NLTK analiza el sentimiento de las reseñas y WordCloud arma una nube con las palabras más usadas.")
+st.title("Scikit-learn y SciPy")
+st.write("Scikit-learn agrupa a los clientes con un modelo de Machine Learning, y SciPy analiza la distribución de los tiempos de entrega.")
 
 df_alicorp = cargar_datos_csv()
 
-tab_nltk, tab_wc = st.tabs(["💬 NLTK", "☁️ WordCloud"])
+tab_skl, tab_sci = st.tabs(["🌳 Scikit-learn", "📊 SciPy"])
 
-# NLTK
-with tab_nltk:
-    st.header("NLTK")
-    st.write("Cada reseña se clasifica como positiva, negativa o neutra según su contenido. La puntuación compuesta (Compound Score) normaliza el sentimiento entre -1 y +1.")
-    st.latex(r"Compound = \frac{\sum \text{valencias}}{\sqrt{\sum \text{valencias}^2 + \alpha}}")
-    sia = SentimentIntensityAnalyzer()
-    df_alicorp["Sentimiento"] = df_alicorp["Reseña_Cliente"].apply(lambda t: sia.polarity_scores(t)["compound"])
-    promedio_sentimiento = df_alicorp["Sentimiento"].mean()
-    positivas = (df_alicorp["Sentimiento"] > 0.05).sum()
-    negativas = (df_alicorp["Sentimiento"] < -0.05).sum()
+# SCIKIT-LEARN
+with tab_skl:
+    st.header("Scikit-learn")
+    st.write("El modelo Random Forest clasifica la Categoría de producto basándose en características de los clientes. A continuación se muestra la Matriz de Confusión del modelo.")
+    st.latex(r"C_{i,j} = \sum_{k=1}^{N} \mathbb{I}(y_k = i \land \hat{y}_k = j)")
 
-    c1, c2, c3 = st.columns(3)
-    c1.metric("Sentimiento Promedio (-1 a 1)", f"{promedio_sentimiento:.2f}")
-    c2.metric("Reseñas Positivas", positivas)
-    c3.metric("Reseñas Negativas", negativas)
+    # Preparar datos
+    X = df_alicorp[["Edad_Cliente", "Ventas_Soles", "Tiempo_Entrega_Dias"]].astype(float)
+    y = df_alicorp["Categoria"].astype(str)
 
+    # Dividir en entrenamiento y prueba
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
-# WORDCLOUD
-with tab_wc:
-    st.header("WordCloud")
-    st.write("La nube resalta las palabras más repetidas en las reseñas. Al agregar una reseña propia, la nube se actualiza al momento.")
+    # Entrenar modelo
+    clf = RandomForestClassifier(n_estimators=50, random_state=42)
+    clf.fit(X_train, y_train)
 
-    todas_reseñas_originales = " ".join(df_alicorp["Reseña_Cliente"])
+    # Predicciones
+    y_pred = clf.predict(X_test)
 
-    reseña_personalizada = st.text_input("Agrega tu propia reseña aquí (ej. 'Excelente producto, me encanta Blanca Flor'):", "")
-
-    if reseña_personalizada:
-        # Para que resalte más, la multiplicamos unas veces
-        texto_final = todas_reseñas_originales + (" " + reseña_personalizada) * 50
-    else:
-        texto_final = todas_reseñas_originales
-
-    wordcloud = WordCloud(width=800, height=400, background_color='white').generate(texto_final)
+    # Matriz de Confusión
+    cm = confusion_matrix(y_test, y_pred, labels=clf.classes_)
+    disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=clf.classes_)
 
     with st.container(border=True):
-        fig_nltk, ax_nltk = plt.subplots(figsize=(8, 4))
-        ax_nltk.imshow(wordcloud, interpolation='bilinear')
-        ax_nltk.axis('off')
-        st.pyplot(fig_nltk)
-        plt.close(fig_nltk)
+        fig_skl, ax_skl = plt.subplots(figsize=(8, 5))
+        disp.plot(ax=ax_skl, cmap="Blues", xticks_rotation=45)
+        ax_skl.set_title("Matriz de Confusión - Clasificación de Categoría")
+        st.pyplot(fig_skl)
+        plt.close(fig_skl)
+
+
+# SCIPY
+with tab_sci:
+    st.header("SciPy")
+    st.write("El gráfico ajusta una curva normal a los tiempos de entrega. La desviación seleccionada define qué tan ancha se ve la curva.")
+    st.latex(r"f(x) = \frac{1}{\sigma\sqrt{2\pi}} e^{-\frac{1}{2}\left(\frac{x-\mu}{\sigma}\right)^2}")
+
+    varianza_ajuste = st.slider("Ajuste manual de Desviación (Simulación):", min_value=0.1, max_value=2.0, value=1.0, step=0.1)
+
+    tiempos = df_alicorp["Tiempo_Entrega_Dias"].dropna()
+    mu, std_original = norm.fit(tiempos)
+    std_simulada = std_original * varianza_ajuste
+
+    with st.container(border=True):
+        fig_sci, ax_sci = plt.subplots(figsize=(8, 4))
+        ax_sci.hist(tiempos, bins=30, density=True, alpha=0.3, color="skyblue", label="Datos Reales (Simulados)")
+
+        xmin, xmax = ax_sci.get_xlim()  # antes usaba plt.xlim() sobre estado global; mejor leerlo del propio eje
+        x = np.linspace(xmin, xmax, 100)
+        p = norm.pdf(x, mu, std_simulada)
+
+        ax_sci.plot(x, p, 'k', linewidth=2, label=rf'Curva Ajustada ($\sigma={std_simulada:.1f}$)')
+        ax_sci.legend()
+        ax_sci.set_xlabel("Días de Entrega")
+        st.pyplot(fig_sci)
+        plt.close(fig_sci)
