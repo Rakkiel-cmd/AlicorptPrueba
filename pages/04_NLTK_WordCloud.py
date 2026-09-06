@@ -29,6 +29,12 @@ st.markdown(
     div[data-testid="stVerticalBlockBorderWrapper"] {
         border-radius: 14px !important;
         box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        transition: all 0.3s ease; 
+    }
+    div[data-testid="stVerticalBlockBorderWrapper"]:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        border-color: rgba(228, 87, 46, 0.4) !important;
     }
     </style>
     """,
