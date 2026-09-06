@@ -17,9 +17,25 @@ st.markdown(
     [data-testid="stMarkdownContainer"], button, input, textarea {
         font-family: 'Poppins', sans-serif;
     }
+    [data-testid="stAppViewContainer"] {
+        background: linear-gradient(180deg, #FFFFFF 0%, #FDF6F2 100%);
+    }
     div[data-testid="stVerticalBlockBorderWrapper"] {
         border-radius: 14px !important;
         box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    div[data-testid="stVerticalBlockBorderWrapper"]:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    }
+    @keyframes logoGlowPulse {
+        0% { box-shadow: 0 0 0 0 rgba(228,87,46,0.55); }
+        70% { box-shadow: 0 0 0 14px rgba(228,87,46,0); }
+        100% { box-shadow: 0 0 0 0 rgba(228,87,46,0); }
+    }
+    .logo-glow {
+        animation: logoGlowPulse 2.2s infinite;
     }
     </style>
     """,
@@ -29,7 +45,7 @@ st.markdown(
 st.sidebar.markdown(
     """
     <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
-        <div style="background:#E4572E; border-radius:8px; padding:6px; display:flex;">
+        <div class="logo-glow" style="background:#E4572E; border-radius:8px; padding:6px; display:flex;">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <rect x="3" y="12" width="4" height="9" rx="1" fill="white"/>
                 <rect x="10" y="7" width="4" height="14" rx="1" fill="white"/>
@@ -53,24 +69,55 @@ tab_tf, tab_keras = st.tabs(["🧮 TensorFlow", "🧠 Keras"])
 # TENSORFLOW
 with tab_tf:
     st.header("TensorFlow")
-    st.write("La curva muestra cómo baja el error del modelo en cada época. La tasa de aprendizaje cambia qué tan rápido baja.")
+    st.write("Esta red neuronal se construye y entrena con operaciones de bajo nivel de TensorFlow (tf.Variable y tf.GradientTape), sin usar la API de alto nivel de Keras. Así se ve, paso a paso, lo que Keras hace \"por dentro\" al entrenar un modelo.")
+    st.latex(r"\hat{y} = W_2 \cdot \text{ReLU}(W_1 x + b_1) + b_2")
 
-    tasa_aprendizaje = st.slider("Tasa de Aprendizaje (Simulada):", min_value=1.0, max_value=10.0, value=5.0, step=1.0)
+    tasa_aprendizaje_tf = st.slider("Tasa de Aprendizaje (Learning Rate):", min_value=0.001, max_value=0.05, value=0.01, step=0.001)
+    epocas_tf = st.slider("Número de Épocas:", min_value=10, max_value=100, value=40, step=10)
 
-    # Curva simulada (no es un entrenamiento real) solo para mostrar el efecto visual de la tasa de aprendizaje
-    epocas = np.arange(1, 21)
-    loss = np.exp(-epocas/tasa_aprendizaje) + np.random.normal(0, 0.05, 20)
-    val_loss = np.exp(-epocas/(tasa_aprendizaje*0.9)) + np.random.normal(0, 0.08, 20)
+    # Datos reales: predecir Ganancias en función de Ventas (normalizados para ayudar a converger)
+    X_tf_np = df_alicorp["Ventas_Soles"].values.astype("float32").reshape(-1, 1)
+    y_tf_np = df_alicorp["Ganancias_Soles"].values.astype("float32").reshape(-1, 1)
+    X_mean_tf, X_std_tf = X_tf_np.mean(), X_tf_np.std()
+    y_mean_tf, y_std_tf = y_tf_np.mean(), y_tf_np.std()
+    X_tensor_tf = tf.constant((X_tf_np - X_mean_tf) / X_std_tf)
+    y_tensor_tf = tf.constant((y_tf_np - y_mean_tf) / y_std_tf)
+
+    # Pesos de una red neuronal de 2 capas (1 entrada -> 8 neuronas ocultas -> 1 salida),
+    # creados y entrenados manualmente con TensorFlow (sin usar keras.Sequential)
+    tf.random.set_seed(42)
+    w1_tf = tf.Variable(tf.random.normal([1, 8], stddev=0.5))
+    b1_tf = tf.Variable(tf.zeros([8]))
+    w2_tf = tf.Variable(tf.random.normal([8, 1], stddev=0.5))
+    b2_tf = tf.Variable(tf.zeros([1]))
+
+    historial_perdida_tf = []
+    barra_tf = st.progress(0)
+    for epoca in range(epocas_tf):
+        with tf.GradientTape() as tape:
+            capa_oculta = tf.nn.relu(tf.matmul(X_tensor_tf, w1_tf) + b1_tf)
+            prediccion_tf = tf.matmul(capa_oculta, w2_tf) + b2_tf
+            perdida_tf = tf.reduce_mean(tf.square(prediccion_tf - y_tensor_tf))
+
+        gradientes_tf = tape.gradient(perdida_tf, [w1_tf, b1_tf, w2_tf, b2_tf])
+        w1_tf.assign_sub(tasa_aprendizaje_tf * gradientes_tf[0])
+        b1_tf.assign_sub(tasa_aprendizaje_tf * gradientes_tf[1])
+        w2_tf.assign_sub(tasa_aprendizaje_tf * gradientes_tf[2])
+        b2_tf.assign_sub(tasa_aprendizaje_tf * gradientes_tf[3])
+
+        historial_perdida_tf.append(float(perdida_tf))
+        barra_tf.progress((epoca + 1) / epocas_tf)
 
     with st.container(border=True):
         fig_tf, ax_tf = plt.subplots(figsize=(8,4))
-        ax_tf.plot(epocas, loss, label="Pérdida Entrenamiento (Loss)")
-        ax_tf.plot(epocas, val_loss, label="Pérdida Validación (Val Loss)")
-        ax_tf.set_xlabel("Épocas")
-        ax_tf.set_ylabel("Pérdida")
-        ax_tf.legend()
+        ax_tf.plot(range(epocas_tf), historial_perdida_tf, color="#E4572E", linewidth=2)
+        ax_tf.set_xlabel("Época")
+        ax_tf.set_ylabel("Error (MSE)")
+        ax_tf.set_title("Disminución del Error - Red Neuronal en TensorFlow")
         st.pyplot(fig_tf)
         plt.close(fig_tf)
+
+    st.caption(f"Pérdida final tras {epocas_tf} épocas: {historial_perdida_tf[-1]:.4f}")
 
 
 # KERAS
