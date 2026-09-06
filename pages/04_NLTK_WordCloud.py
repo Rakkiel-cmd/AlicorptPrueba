@@ -59,7 +59,7 @@ st.sidebar.markdown(
 st.sidebar.caption("☁️ Análisis de sentimiento y nube de palabras.")
 
 st.title("NLTK y WordCloud")
-st.write("NLTK analiza el sentimiento de las reseñas y WordCloud arma una nube con las palabras más usadas.")
+st.write("NLTK analiza el sentimiento de las reseñas y s.")
 
 df_alicorp = cargar_datos_csv()
 
