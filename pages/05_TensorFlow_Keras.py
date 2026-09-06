@@ -55,12 +55,38 @@ with tab_tf:
     st.header("TensorFlow")
     st.write("La curva muestra cómo baja el error del modelo en cada época. La tasa de aprendizaje cambia qué tan rápido baja.")
 
-    tasa_aprendizaje = st.slider("Tasa de Aprendizaje (Simulada):", min_value=1.0, max_value=10.0, value=5.0, step=1.0)
+    tasa_aprendizaje = st.slider("Tasa de Aprendizaje (Learning Rate):", min_value=0.001, max_value=0.2, value=0.05, step=0.01, format="%.3f")
 
-    # Curva simulada (no es un entrenamiento real) solo para mostrar el efecto visual de la tasa de aprendizaje
+    # Entrenamiento REAL de una pequeña red neuronal con TensorFlow/Keras
+    # Preparar y normalizar los datos
+    X_tf = df_alicorp[["Ventas_Soles"]].astype(float).values
+    y_tf = df_alicorp[["Ganancias_Soles"]].astype(float).values
+    X_tf = (X_tf - X_tf.mean()) / X_tf.std()
+    y_tf = (y_tf - y_tf.mean()) / y_tf.std()
+
+    # Dividir en entrenamiento (80%) y validación (20%)
+    split = int(len(X_tf) * 0.8)
+    X_train, X_val = X_tf[:split], X_tf[split:]
+    y_train, y_val = y_tf[:split], y_tf[split:]
+
+    # Crear modelo
+    tf.random.set_seed(42) # Semilla fija para estabilidad visual
+    modelo_tf = keras.Sequential([
+        keras.layers.Input(shape=(1,)),
+        keras.layers.Dense(4, activation='relu'),
+        keras.layers.Dense(1)
+    ])
+
+    # Compilar usando la tasa de aprendizaje del slider
+    modelo_tf.compile(optimizer=keras.optimizers.SGD(learning_rate=tasa_aprendizaje), loss='mse')
+
+    # Entrenar en vivo por 20 épocas
+    historia = modelo_tf.fit(X_train, y_train, epochs=20, validation_data=(X_val, y_val), verbose=0)
+
+    # Extraer la pérdida real
     epocas = np.arange(1, 21)
-    loss = np.exp(-epocas/tasa_aprendizaje) + np.random.normal(0, 0.05, 20)
-    val_loss = np.exp(-epocas/(tasa_aprendizaje*0.9)) + np.random.normal(0, 0.08, 20)
+    loss = historia.history['loss']
+    val_loss = historia.history['val_loss']
 
     with st.container(border=True):
         fig_tf, ax_tf = plt.subplots(figsize=(8,4))
