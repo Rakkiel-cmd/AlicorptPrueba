@@ -27,14 +27,16 @@ st.markdown(
         font-family: 'Poppins', sans-serif;
     }
     div[data-testid="stVerticalBlockBorderWrapper"] {
-        border-radius: 14px !important;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        transition: all 0.3s ease; 
+        border-radius: 16px !important;
+        border: 2px solid rgba(228, 87, 46, 0.25) !important;
+        background-color: #ffffff !important;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+        transition: all 0.3s ease-in-out !important;
     }
     div[data-testid="stVerticalBlockBorderWrapper"]:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-        border-color: rgba(228, 87, 46, 0.4) !important;
+        transform: translateY(-6px) !important;
+        box-shadow: 0 12px 25px rgba(228, 87, 46, 0.18) !important;
+        border-color: rgba(228, 87, 46, 0.8) !important;
     }
     </style>
     """,
