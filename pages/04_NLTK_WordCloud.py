@@ -1,8 +1,9 @@
 import streamlit as st
 import matplotlib.pyplot as plt
-from wordcloud import WordCloud
+from wordcloud import WordCloud, STOPWORDS
 import nltk
 from nltk.sentiment import SentimentIntensityAnalyzer
+from deep_translator import GoogleTranslator
 from data_gen import cargar_datos_csv
 
 # Descargar NLTK solo la primera vez que arranca el servidor (cacheado)
@@ -80,16 +81,41 @@ with tab_nltk:
     st.header("NLTK")
     st.write("Cada reseña se clasifica como positiva, negativa o neutra según su contenido. La puntuación compuesta (Compound Score) normaliza el sentimiento entre -1 y +1.")
     st.latex(r"Compound = \frac{\sum \text{valencias}}{\sqrt{\sum \text{valencias}^2 + \alpha}}")
-    sia = SentimentIntensityAnalyzer()
-    df_alicorp["Sentimiento"] = df_alicorp["Reseña_Cliente"].apply(lambda t: sia.polarity_scores(t)["compound"])
+
+    # VADER solo entiende inglés. Si las reseñas están en español, el compound
+    # sale mal (por ejemplo, "no" se detecta como negación y sesga todo a negativo).
+    # Por eso traducimos cada reseña al inglés antes de analizarla.
+    @st.cache_data
+    def traducir_reseñas(reseñas):
+        traductor = GoogleTranslator(source="es", target="en")
+        return [traductor.translate(r) for r in reseñas]
+
+    with st.spinner("Analizando sentimiento de las reseñas..."):
+        reseñas_en = traducir_reseñas(df_alicorp["Reseña_Cliente"].tolist())
+        sia = SentimentIntensityAnalyzer()
+        df_alicorp["Sentimiento"] = [sia.polarity_scores(t)["compound"] for t in reseñas_en]
+
     promedio_sentimiento = df_alicorp["Sentimiento"].mean()
     positivas = (df_alicorp["Sentimiento"] > 0.05).sum()
     negativas = (df_alicorp["Sentimiento"] < -0.05).sum()
 
     c1, c2, c3 = st.columns(3)
-    c1.metric("Sentimiento Promedio (-1 a 1)", f"{promedio_sentimiento:.2f}")
-    c2.metric("Reseñas Positivas", positivas)
-    c3.metric("Reseñas Negativas", negativas)
+    with c1:
+        with st.container(border=True):
+            st.metric("Sentimiento Promedio (-1 a 1)", f"{promedio_sentimiento:.2f}")
+    with c2:
+        with st.container(border=True):
+            st.metric("Reseñas Positivas", positivas)
+    with c3:
+        with st.container(border=True):
+            st.metric("Reseñas Negativas", negativas)
+
+    with st.expander("📋 Ver detalle por reseña"):
+        st.dataframe(
+            df_alicorp[["Reseña_Cliente", "Sentimiento"]],
+            use_container_width=True,
+            hide_index=True,
+        )
 
 
 # WORDCLOUD
@@ -107,7 +133,22 @@ with tab_wc:
     else:
         texto_final = todas_reseñas_originales
 
-    wordcloud = WordCloud(width=800, height=400, background_color='white').generate(texto_final)
+    # WordCloud usa stopwords en inglés por defecto. Sin esto, palabras como
+    # "que", "de", "la", "el" saldrían gigantes en la nube sin aportar nada.
+    stopwords_es = set(STOPWORDS)
+    stopwords_es.update([
+        "que", "de", "la", "el", "en", "y", "es", "un", "una", "los", "las",
+        "por", "con", "para", "muy", "se", "su", "lo", "al", "del", "mi",
+        "más", "pero", "sus", "le", "ya", "o", "este", "sí", "porque",
+    ])
+
+    wordcloud = WordCloud(
+        width=800,
+        height=400,
+        background_color='white',
+        stopwords=stopwords_es,
+        colormap='autumn',
+    ).generate(texto_final)
 
     with st.container(border=True):
         fig_nltk, ax_nltk = plt.subplots(figsize=(8, 4))
@@ -115,4 +156,3 @@ with tab_wc:
         ax_nltk.axis('off')
         st.pyplot(fig_nltk)
         plt.close(fig_nltk)
-
