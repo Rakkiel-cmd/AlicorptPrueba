@@ -29,22 +29,29 @@ y_mean, y_std = y.mean(), y.std()
 X_norm = (X - X_mean) / X_std
 y_norm = (y - y_mean) / y_std
 
-# Crear modelo simple
-modelo_tf = keras.Sequential([
-    keras.layers.Dense(8, activation='relu', input_shape=(1,)),
-    keras.layers.Dense(1)
+# Convertir a tensores de TensorFlow explícitamente
+X_tensor = tf.constant(X_norm, dtype=tf.float32)
+y_tensor = tf.constant(y_norm, dtype=tf.float32)
+
+# Crear modelo simple usando tf.keras explícitamente
+modelo_tf = tf.keras.Sequential([
+    tf.keras.layers.Dense(8, activation='relu', input_shape=(1,)),
+    tf.keras.layers.Dense(1)
 ])
 
-modelo_tf.compile(optimizer='adam', loss='mse')
+modelo_tf.compile(
+    optimizer=tf.keras.optimizers.Adam(),
+    loss=tf.keras.losses.MeanSquaredError()
+)
 
 # Entrenar
 st.write("Entrenando modelo...")
-historial = modelo_tf.fit(X_norm, y_norm, epochs=50, verbose=0)
+historial = modelo_tf.fit(X_tensor, y_tensor, epochs=50, verbose=0)
 
 st.success("✅ Entrenamiento completado")
 
 # Predicciones
-predicciones_norm = modelo_tf.predict(X_norm, verbose=0)
+predicciones_norm = modelo_tf.predict(X_tensor, verbose=0)
 predicciones = (predicciones_norm * y_std) + y_mean
 
 # Tabla de predicciones
@@ -67,6 +74,10 @@ ax.set_xlabel("Ventas")
 ax.set_ylabel("Ganancias")
 ax.legend()
 st.pyplot(fig)
+
+
+
+
 
 # ============================================================================
 # KERAS
