@@ -35,7 +35,8 @@ y_tensor = tf.constant(y_norm, dtype=tf.float32)
 
 # Crear modelo simple usando tf.keras explícitamente
 modelo_tf = tf.keras.Sequential([
-    tf.keras.layers.Dense(8, activation='relu', input_shape=(1,)),
+    tf.keras.Input(shape=(1,)),
+    tf.keras.layers.Dense(8, activation='relu'),
     tf.keras.layers.Dense(1)
 ])
 
@@ -64,7 +65,7 @@ df_pred = pd.DataFrame({
     "Error": np.round(np.abs(y.flatten()[:15] - predicciones.flatten()[:15]), 2)
 })
 
-st.dataframe(df_pred, use_container_width=True)
+st.dataframe(df_pred, width='stretch')
 
 # Gráfico simple
 fig, ax = plt.subplots()
@@ -74,9 +75,6 @@ ax.set_xlabel("Ventas")
 ax.set_ylabel("Ganancias")
 ax.legend()
 st.pyplot(fig)
-
-
-
 
 
 # ============================================================================
@@ -91,7 +89,8 @@ y_keras = (df_alicorp["Ventas_Soles"] > df_alicorp["Ventas_Soles"].median()).ast
 
 # Crear modelo
 modelo_keras = keras.Sequential([
-    keras.layers.Dense(32, activation='relu', input_shape=(2,)),
+    keras.Input(shape=(2,)),
+    keras.layers.Dense(32, activation='relu'),
     keras.layers.Dense(1, activation='sigmoid')
 ])
 
@@ -117,7 +116,7 @@ df_pred_keras = pd.DataFrame({
     "Real": ["Alto" if val == 1 else "Bajo" for val in y_keras[:15]]
 })
 
-st.dataframe(df_pred_keras, use_container_width=True)
+st.dataframe(df_pred_keras, width='stretch')
 
 # Gráfico simple
 fig2, ax2 = plt.subplots()
