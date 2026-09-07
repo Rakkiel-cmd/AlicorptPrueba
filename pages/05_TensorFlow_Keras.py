@@ -5,14 +5,14 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import tensorflow as tf
 from tensorflow import keras
-from data_gen import cargar_o_generar_csv
+from data_gen import cargar_datos_csv
 
 st.set_page_config(page_title="TensorFlow y Keras", layout="wide")
 
 st.title("TensorFlow y Keras")
 st.write("Predicción de Ganancias basado en Ventas")
 
-df_alicorp = cargar_o_generar_csv()
+df_alicorp = cargar_datos_csv()
 
 # ============================================================================
 # TENSORFLOW
