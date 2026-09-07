@@ -29,23 +29,7 @@ st.markdown(
     [data-testid="stAppViewContainer"] {
         background: linear-gradient(180deg, #FFFFFF 0%, #FDF6F2 100%);
     }
-    div[data-testid="stVerticalBlockBorderWrapper"] {
-        border-radius: 14px !important;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-    div[data-testid="stVerticalBlockBorderWrapper"]:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-    }
-    @keyframes logoGlowPulse {
-        0% { box-shadow: 0 0 0 0 rgba(228,87,46,0.55); }
-        70% { box-shadow: 0 0 0 14px rgba(228,87,46,0); }
-        100% { box-shadow: 0 0 0 0 rgba(228,87,46,0); }
-    }
-    .logo-glow {
-        animation: logoGlowPulse 2.2s infinite;
-    }
+    
     </style>
     """,
     unsafe_allow_html=True,
