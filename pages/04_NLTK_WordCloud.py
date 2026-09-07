@@ -26,17 +26,17 @@ st.markdown(
     [data-testid="stMarkdownContainer"], button, input, textarea {
         font-family: 'Poppins', sans-serif;
     }
-    div[data-testid="stVerticalBlockBorderWrapper"] {
+   div[data-testid="stVerticalBlockBorderWrapper"] {
         border-radius: 16px !important;
-        border: 2px solid rgba(228, 87, 46, 0.25) !important;
+        border: 2px solid #E4572E !important;
         background-color: #ffffff !important;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+        box-shadow: 0 6px 20px rgba(228, 87, 46, 0.15) !important;
+        padding: 15px !important;
         transition: all 0.3s ease-in-out !important;
     }
     div[data-testid="stVerticalBlockBorderWrapper"]:hover {
-        transform: translateY(-6px) !important;
-        box-shadow: 0 12px 25px rgba(228, 87, 46, 0.18) !important;
-        border-color: rgba(228, 87, 46, 0.8) !important;
+        transform: translateY(-5px) !important;
+        box-shadow: 0 12px 30px rgba(228, 87, 46, 0.25) !important;
     }
     </style>
     """,
