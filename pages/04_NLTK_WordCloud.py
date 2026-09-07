@@ -26,17 +26,25 @@ st.markdown(
     [data-testid="stMarkdownContainer"], button, input, textarea {
         font-family: 'Poppins', sans-serif;
     }
-   div[data-testid="stVerticalBlockBorderWrapper"] {
-        border-radius: 16px !important;
-        border: 2px solid #E4572E !important;
-        background-color: #ffffff !important;
-        box-shadow: 0 6px 20px rgba(228, 87, 46, 0.15) !important;
-        padding: 15px !important;
-        transition: all 0.3s ease-in-out !important;
+    [data-testid="stAppViewContainer"] {
+        background: linear-gradient(180deg, #FFFFFF 0%, #FDF6F2 100%);
+    }
+    div[data-testid="stVerticalBlockBorderWrapper"] {
+        border-radius: 14px !important;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
     div[data-testid="stVerticalBlockBorderWrapper"]:hover {
-        transform: translateY(-5px) !important;
-        box-shadow: 0 12px 30px rgba(228, 87, 46, 0.25) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    }
+    @keyframes logoGlowPulse {
+        0% { box-shadow: 0 0 0 0 rgba(228,87,46,0.55); }
+        70% { box-shadow: 0 0 0 14px rgba(228,87,46,0); }
+        100% { box-shadow: 0 0 0 0 rgba(228,87,46,0); }
+    }
+    .logo-glow {
+        animation: logoGlowPulse 2.2s infinite;
     }
     </style>
     """,
@@ -46,7 +54,7 @@ st.markdown(
 st.sidebar.markdown(
     """
     <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
-        <div style="background:#E4572E; border-radius:8px; padding:6px; display:flex;">
+        <div class="logo-glow" style="background:#E4572E; border-radius:8px; padding:6px; display:flex;">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <rect x="3" y="12" width="4" height="9" rx="1" fill="white"/>
                 <rect x="10" y="7" width="4" height="14" rx="1" fill="white"/>
@@ -94,21 +102,17 @@ with tab_wc:
     reseña_personalizada = st.text_input("Agrega tu propia reseña aquí (ej. 'Excelente producto, me encanta Blanca Flor'):", "")
 
     if reseña_personalizada:
+        # Para que resalte más, la multiplicamos unas veces
         texto_final = todas_reseñas_originales + (" " + reseña_personalizada) * 50
     else:
         texto_final = todas_reseñas_originales
 
     wordcloud = WordCloud(width=800, height=400, background_color='white').generate(texto_final)
 
-    # Creamos la tarjeta visual con HTML puro y directo para que SÍ se note el borde
-    st.markdown("""
-        <div style="border: 2px solid #E4572E; border-radius: 16px; padding: 20px; background-color: white; box-shadow: 0 4px 15px rgba(228,87,46,0.15);">
-    """, unsafe_allow_html=True)
+    with st.container(border=True):
+        fig_nltk, ax_nltk = plt.subplots(figsize=(8, 4))
+        ax_nltk.imshow(wordcloud, interpolation='bilinear')
+        ax_nltk.axis('off')
+        st.pyplot(fig_nltk)
+        plt.close(fig_nltk)
 
-    fig_nltk, ax_nltk = plt.subplots(figsize=(8, 4))
-    ax_nltk.imshow(wordcloud, interpolation='bilinear')
-    ax_nltk.axis('off')
-    st.pyplot(fig_nltk)
-    plt.close(fig_nltk)
-
-    st.markdown("</div>", unsafe_allow_html=True)
