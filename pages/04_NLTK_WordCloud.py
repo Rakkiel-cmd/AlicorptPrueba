@@ -94,16 +94,21 @@ with tab_wc:
     reseña_personalizada = st.text_input("Agrega tu propia reseña aquí (ej. 'Excelente producto, me encanta Blanca Flor'):", "")
 
     if reseña_personalizada:
-        # Para que resalte más, la multiplicamos unas veces
         texto_final = todas_reseñas_originales + (" " + reseña_personalizada) * 50
     else:
         texto_final = todas_reseñas_originales
 
     wordcloud = WordCloud(width=800, height=400, background_color='white').generate(texto_final)
 
-    with st.container(border=True):
-        fig_nltk, ax_nltk = plt.subplots(figsize=(8, 4))
-        ax_nltk.imshow(wordcloud, interpolation='bilinear')
-        ax_nltk.axis('off')
-        st.pyplot(fig_nltk)
-        plt.close(fig_nltk)
+    # Creamos la tarjeta visual con HTML puro y directo para que SÍ se note el borde
+    st.markdown("""
+        <div style="border: 2px solid #E4572E; border-radius: 16px; padding: 20px; background-color: white; box-shadow: 0 4px 15px rgba(228,87,46,0.15);">
+    """, unsafe_allow_html=True)
+
+    fig_nltk, ax_nltk = plt.subplots(figsize=(8, 4))
+    ax_nltk.imshow(wordcloud, interpolation='bilinear')
+    ax_nltk.axis('off')
+    st.pyplot(fig_nltk)
+    plt.close(fig_nltk)
+
+    st.markdown("</div>", unsafe_allow_html=True)
