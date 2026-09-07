@@ -33,21 +33,22 @@ y_norm = (y - y_mean) / y_std
 X_tensor = tf.constant(X_norm, dtype=tf.float32)
 y_tensor = tf.constant(y_norm, dtype=tf.float32)
 
-# Crear modelo simple usando tf.keras explícitamente
+# Crear modelo con más capacidad (más neuronas y capas)
 modelo_tf = tf.keras.Sequential([
     tf.keras.Input(shape=(1,)),
-    tf.keras.layers.Dense(8, activation='relu'),
+    tf.keras.layers.Dense(32, activation='relu'),
+    tf.keras.layers.Dense(16, activation='relu'),
     tf.keras.layers.Dense(1)
 ])
 
 modelo_tf.compile(
-    optimizer=tf.keras.optimizers.Adam(),
+    optimizer=tf.keras.optimizers.Adam(learning_rate=0.01),
     loss=tf.keras.losses.MeanSquaredError()
 )
 
-# Entrenar
+# Entrenar (más épocas)
 st.write("Entrenando modelo...")
-historial = modelo_tf.fit(X_tensor, y_tensor, epochs=50, verbose=0)
+historial = modelo_tf.fit(X_tensor, y_tensor, epochs=200, verbose=0)
 
 st.success("✅ Entrenamiento completado")
 
